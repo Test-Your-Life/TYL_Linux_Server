@@ -1,0 +1,24 @@
+{
+  "name": "tyl_linux_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type":"module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Test-Your-Life/TYL_Linux_Server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Test-Your-Life/TYL_Linux_Server/issues"
+  },
+  "homepage": "https://github.com/Test-Your-Life/TYL_Linux_Server#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
