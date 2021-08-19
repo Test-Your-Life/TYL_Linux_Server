@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       EMAIL: DataTypes.STRING,
       PRF_IMG: DataTypes.STRING,
-      NK: DataTypes.STRING,
+      NK: DataTypes.STRING(16),
       JN_DT: DataTypes.DATE,
     },
     {
@@ -28,5 +28,6 @@ module.exports = (sequelize, DataTypes) => {
       charset: "utf8",
     }
   );
+
   return User;
 };
