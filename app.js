@@ -1,10 +1,11 @@
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const { sequelize } = require("./sequelize");
-const loginRouter = require("./routes/login");
+const authRouter = require("./routes/auth");
 const tokenRouter = require("./routes/token");
 
-const PORT = 80;
+const PORT = 4000;
 const app = express();
 
 sequelize
@@ -23,7 +24,8 @@ app.use(
   })
 );
 app.use(express.json());
-app.use("/login", loginRouter);
+app.use(cookieParser());
+app.use("/auth", authRouter);
 app.use("/token", tokenRouter);
 
 app.listen(PORT, function () {

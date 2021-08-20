@@ -6,23 +6,49 @@ require("dotenv").config();
 const router = Router();
 
 router.post("/slient-refresh", function (req, res) {
-  console.log(req.cookies);
-  console.log(req.headers);
-  res.json({ code: 200 });
-  //   res
-  //     .cookie("refreshToken", 123, {
-  //       httpOnly: true,
-  //     })
-  //     .json({
-  //       code: 200,
-  //       message: "토큰이 발급되었습니다.",
-  //     });
+  const { refreshToken } = req.cookies;
+  const decoded = jwt.decode(refreshToken);
+   
+  if(decoded === null) {
+    return res.json({ code: 401, message: "토큰이 만료되었습니다."});
+  }
+
+  Token.findByPk(refreshToken)
+  .then((row) => {
+    const { USER_ID } = row.dataValues;
+    User.findByPk(USER_ID)
+    .then((row) => {
+      const { USER_ID, EMAIL, PRF_IMG, NK } = row.dataValues;
+
+      try {
+        // accessToken 발급
+        const payload = { email: EMAIL, nickname: NK };
+        const accessToken = jwt.sign(payload, process.env.JWT_SECRET, {
+          expiresIn: "1m",
+          algorithm: "HS256",
+          issuer: "TYL",
+        });
+        return res
+            .cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            sameSite: "none",
+            secure: true,
+          })
+          .json({
+            code: 200,
+            message: "토큰이 발급되었습니다.",
+            accessToken,
+          });
+      } catch (error) {
+        console.error(error);
+      }
+    });
+  });
 });
 
-router.post("/", function (req, res) {
-  let json = {};
+router.post("/login", function (req, res) {
   const { email, name } = req.body;
-  console.log(req.headers);
+  console.log('쿠키도착!!', req.cookies);
 
   // 로그인 시도하는 계정의 기존 회원 유무 판단
   User.findAll({
@@ -37,11 +63,6 @@ router.post("/", function (req, res) {
         NK: name,
         JN_DT: new Date(),
       });
-
-      json = {
-        hasSignedUp: false,
-        user: {},
-      };
     } else {
       // 기존 회원
       const { USER_ID, EMAIL, PRF_IMG, NK } = rows[0].dataValues;
@@ -68,10 +89,10 @@ router.post("/", function (req, res) {
           USER_ID: USER_ID,
         });
 
+  
         return res
-          .cookie("refreshToken", refreshToken, {
+            .cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            expires: new Date(new Date() + 900000),
             sameSite: "none",
             secure: true,
           })
@@ -88,6 +109,27 @@ router.post("/", function (req, res) {
         });
       }
     }
+  });
+});
+
+router.post("/logout", function (req, res) {
+  console.log('쿠키도착!!', req.cookies);
+
+  const { refreshToken } = req.cookies;
+
+  Token.destroy({
+    where: {
+      RFS_TK: refreshToken
+    }
+  }).then(function () {
+         return res
+      .cookie('refreshToken', '', {maxAge: 0, 
+      httpOnly: true,
+            sameSite: "none",
+            secure: true,}).json({
+      code: 201,
+      message: '토큰이 제거되었습니다.'
+      });
   });
 });
 
