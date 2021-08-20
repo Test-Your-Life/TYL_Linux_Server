@@ -1,9 +1,23 @@
 const { Router } = require("express");
-const { User } = require("../sequelize");
+const { User, Token } = require("../sequelize");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const router = Router();
+
+router.post("/slient-refresh", function (req, res) {
+  console.log(req.cookies);
+  console.log(req.headers);
+  res.json({ code: 200 });
+  //   res
+  //     .cookie("refreshToken", 123, {
+  //       httpOnly: true,
+  //     })
+  //     .json({
+  //       code: 200,
+  //       message: "토큰이 발급되었습니다.",
+  //     });
+});
 
 router.post("/", function (req, res) {
   let json = {};
@@ -30,8 +44,7 @@ router.post("/", function (req, res) {
       };
     } else {
       // 기존 회원
-      console.log("기존 가입 유저~");
-      const { EMAIL, PRF_IMG, NK } = rows[0].dataValues;
+      const { USER_ID, EMAIL, PRF_IMG, NK } = rows[0].dataValues;
 
       try {
         // accessToken 발급
@@ -49,8 +62,19 @@ router.post("/", function (req, res) {
           issuer: "TYL",
         });
 
+        // refreshToken DB에 추가
+        Token.create({
+          RFS_TK: refreshToken,
+          USER_ID: USER_ID,
+        });
+
         return res
-          .cookie("refreshToken", refreshToken, { httpOnly: true })
+          .cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            expires: new Date(new Date() + 900000),
+            sameSite: "none",
+            secure: true,
+          })
           .json({
             code: 200,
             message: "토큰이 발급되었습니다.",

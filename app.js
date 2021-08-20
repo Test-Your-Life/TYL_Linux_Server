@@ -16,7 +16,12 @@ sequelize
     console.error(err);
   });
 
-app.use(cors());
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use("/login", loginRouter);
 app.use("/token", tokenRouter);
