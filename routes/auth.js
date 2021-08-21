@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { User, Token } = require("../sequelize");
+const { User, Token, Asset } = require("../sequelize");
 const jwt = require("jsonwebtoken");
 const {
   signAccessToken,
@@ -13,7 +13,7 @@ const {
 
 const router = Router();
 
-router.post("/slient-refresh", function (req, res) {
+router.get("/slient-refresh", function (req, res) {
   const { refreshToken } = req.cookies;
   if (!refreshToken) return sendExpiredResponse(res);
   try {
@@ -31,6 +31,7 @@ router.post("/slient-refresh", function (req, res) {
       });
     });
   } catch (error) {
+    console.log("만료");
     Token.destroy({
       where: {
         RFS_TK: refreshToken,
@@ -56,6 +57,16 @@ router.post("/login", function (req, res) {
         EMAIL: email,
         NK: name,
         JN_DT: new Date(),
+      }).then((row) => {
+        const { USER_ID } = row.dataValues;
+        Asset.create({
+          ASS_ID: `${USER_ID}_cash`,
+          USER_ID: USER_ID,
+          TRS_TP: "CASH",
+          TRS_NM: "현금",
+          PRC: 1000000,
+          CNT: 1,
+        });
       });
     } else {
       // 기존 회원
@@ -84,7 +95,7 @@ router.post("/login", function (req, res) {
 
 router.post("/logout", function (req, res) {
   const { refreshToken } = req.cookies;
-
+  if (!refreshToken) return sendExpiredResponse(res);
   Token.destroy({
     where: {
       RFS_TK: refreshToken,

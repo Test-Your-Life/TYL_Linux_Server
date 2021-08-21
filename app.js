@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const { sequelize } = require("./sequelize");
 const authRouter = require("./routes/auth");
 const tokenRouter = require("./routes/token");
+const assetRouter = require("./routes/asset");
 
 const PORT = 4000;
 const app = express();
@@ -27,6 +28,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/auth", authRouter);
 app.use("/token", tokenRouter);
+app.use("/asset", assetRouter);
 
 app.listen(PORT, function () {
   console.log(`포트번호 ${PORT}번에서 서버 동작 중..`);
