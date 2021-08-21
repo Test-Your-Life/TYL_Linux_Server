@@ -2,30 +2,33 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  class AssetHistory extends Model {
+  class Asset extends Model {
     static associate(models) {
-      models.AssetHistory.belongsTo(models.User, {});
+      models.Asset.belongsTo(models.User, {});
     }
   }
 
-  AssetHistory.init(
+  Asset.init(
     {
-      ASS_HST_ID: {
+      ASS_ID: {
         type: DataTypes.STRING,
         primaryKey: true,
       },
       USER_ID: DataTypes.INTEGER,
-      ASS_SUM: DataTypes.INTEGER,
-      DT: DataTypes.DATE,
+      TRS_TP: DataTypes.STRING(4),
+      TRS_NM: DataTypes.STRING(100),
+      PRC: DataTypes.INTEGER,
+      CNT: DataTypes.INTEGER,
+      PRF: DataTypes.INTEGER,
     },
     {
       sequelize,
-      modelName: "AssetHistory",
-      tableName: "TB_ASS_HST",
+      modelName: "Asset",
+      tableName: "TB_ASS",
       timestamps: false,
       charset: "utf8",
     }
   );
 
-  return AssetHistory;
+  return Asset;
 };
