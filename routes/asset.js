@@ -15,29 +15,42 @@ router.get("/", async function (req, res) {
     const assetQueryResult = await Asset.findAll({ where: { USER_ID: id } });
 
     let cash;
-    let stock = [];
-    let coin = [];
+    let stock = { stockList: [], stockAsset: 0, stockProfit: 0 };
+    let coin = { coinList: [], coinAsset: 0, coinProfit: 0 };
     const assetSum = assetQueryResult.reduce((acc, cur) => {
+      const asset = cur.PRC * cur.CNT;
+      const profit = cur.TOT - asset;
       if (cur.TRS_TP === "CASH") cash = { amount: cur.PRC };
-      else if (cur.TRS_TP === "STK")
-        stock.push({ price: cur.PRC, quantity: cur.CNT, profit: cur.PRF });
-      else if (cur.TRS_TP === "COIN")
-        coin.push({ price: cur.PRC, quantity: cur.CNT, profit: cur.PRF });
+      else if (cur.TRS_TP === "STK") {
+        stock.stockList.push({
+          price: cur.PRC,
+          quantity: cur.CNT,
+          profit: profit,
+        });
+        stock.stockProfit += profit;
+        stock.stockAsset += asset;
+      } else if (cur.TRS_TP === "COIN") {
+        coin.coinList.push({
+          price: cur.PRC,
+          quantity: cur.CNT,
+          profit: profit,
+        });
+        coin.coinProfit += profit;
+        coin.coinAsset += asset;
+      }
       return acc + cur.PRC * cur.CNT;
     }, 0);
 
-    res.json({ asset: assetSum, cash: cash, stock: stock, coin: coin });
+    res.json({
+      asset: assetSum,
+      cash: cash,
+      stock: stock,
+      coin: coin,
+    });
   } catch (error) {
     console.error(error);
     sendExpiredResponse(res);
   }
-  //   Token.destroy({
-  //     where: {
-  //       RFS_TK: refreshToken,
-  //     },
-  //   }).then(function () {
-  //     return sendUnauthResponse(res);
-  //   });
 });
 
 module.exports = router;

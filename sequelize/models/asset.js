@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       TRS_NM: DataTypes.STRING(100),
       PRC: DataTypes.INTEGER,
       CNT: DataTypes.INTEGER,
-      PRF: DataTypes.INTEGER,
+      TOT: DataTypes.INTEGER,
     },
     {
       sequelize,
