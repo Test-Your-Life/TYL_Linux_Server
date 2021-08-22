@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       USER_ID: DataTypes.INTEGER,
       ASS_SUM: DataTypes.INTEGER,
+      PRF: DataTypes.INTEGER,
       DT: DataTypes.DATE,
     },
     {
