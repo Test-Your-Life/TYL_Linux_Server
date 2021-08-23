@@ -105,3 +105,6 @@ dist
 
 # sequelize
 config/
+
+# stock
+stock/
