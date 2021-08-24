@@ -6,6 +6,7 @@ const authRouter = require("./routes/auth");
 const tokenRouter = require("./routes/token");
 const assetRouter = require("./routes/asset");
 const rankRouter = require("./routes/rank");
+const stockRouter = require("./routes/stock");
 
 const PORT = 4000;
 const app = express();
@@ -31,6 +32,7 @@ app.use("/auth", authRouter);
 app.use("/token", tokenRouter);
 app.use("/asset", assetRouter);
 app.use("/rank", rankRouter);
+app.use("/stock", stockRouter);
 
 app.listen(PORT, function () {
   console.log(`포트번호 ${PORT}번에서 서버 동작 중..`);
