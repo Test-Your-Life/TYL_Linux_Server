@@ -8,6 +8,7 @@ const assetRouter = require("./routes/asset");
 const rankRouter = require("./routes/rank");
 const stockRouter = require("./routes/stock");
 
+const { updateRealData } = require("./helpers/stockHelper.js");
 const PORT = 4000;
 const app = express();
 
@@ -26,6 +27,9 @@ app.use(
     credentials: true,
   })
 );
+
+updateRealData();
+
 app.use(express.json());
 app.use(cookieParser());
 app.use("/auth", authRouter);

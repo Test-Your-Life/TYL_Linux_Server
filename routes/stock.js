@@ -4,7 +4,7 @@ const { Stock, StockCode } = require("../sequelize");
 const router = Router();
 
 router.get("/real-data", async function (req, res) {
-  const stocks = await Stock.findAll();
+  const stocks = await Stock.findAll({ order: [["AMT", "DESC"]] });
   const stockList = stocks.map((stock) => {
     const { AMT, STR_VL, END_VL, HIGH_VL, LOW_VL, RATE, STK_NM, STK_CD } =
       stock.dataValues;
