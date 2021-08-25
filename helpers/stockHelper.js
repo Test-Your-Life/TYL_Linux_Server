@@ -4,24 +4,25 @@ const moment = require("moment");
 const { Stock } = require("../sequelize");
 
 const updateStockTable = (stocks) => {
-  stocks.forEach((e, idx) => {
+  for (const idx in stocks) {
+    const stock = stocks[idx];
     Stock.update(
       {
-        VL: Number(e.open),
-        STR_VL: Number(e.open),
-        END_VL: Number(e.close),
-        LOW_VL: Number(e.low),
-        HIGH_VL: Number(e.high),
-        AMT: Number(e.amount),
-        RATE: Number(e.rate),
+        VL: stock.close,
+        STR_VL: stock.open,
+        END_VL: stock.close,
+        LOW_VL: stock.low,
+        HIGH_VL: stock.high,
+        AMT: stock.amount,
+        RATE: stock.rate,
       },
       {
         where: {
-          STK_CD: e.code,
+          STK_CD: stock.code,
         },
       }
     );
-  });
+  }
 };
 
 const checkStockMarketTime = () => {
@@ -50,22 +51,18 @@ module.exports = {
       .join("/")}/stock/data/stock-data.json`;
 
     setInterval(() => {
-      if (!checkStockMarketTime()) {
-        console.log(
-          `주식 시장이 열린 시간이 아닙니다. [${moment(new Date())
-            .tz("Asia/Seoul")
-            .format("yyyy-MM-DD HH:mm:ss")}]`
-        );
-        return;
-      }
+      // if (!checkStockMarketTime()) {
+      //   console.log(
+      //     `주식 시장이 열린 시간이 아닙니다. [${moment(new Date())
+      //       .tz("Asia/Seoul")
+      //       .format("yyyy-MM-DD HH:mm:ss")}]`
+      //   );
+      //   return;
+      // }
       console.log("주식 데이터 업데이트가 시작되었습니다.");
       const fileContent = fs.readFileSync(filePath, "utf-8");
       const a = JSON.parse(fileContent);
-      // console.log(a);
-      // const b = fileContent.replaceAll(/[^\"]/, "");
-      // const c = JSON.parse(b);
-      // console.log(c);
-      // updateStockTable(JSON.parse(fileContent));
-    }, 1000 * 2);
+      updateStockTable(a);
+    }, 1000 * 10);
   },
 };

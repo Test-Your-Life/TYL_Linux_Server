@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const logger = require("morgan");
 const { sequelize } = require("./sequelize");
 const authRouter = require("./routes/auth");
 const tokenRouter = require("./routes/token");
@@ -30,6 +31,7 @@ app.use(
 
 updateRealData();
 
+app.use(logger("dev"));
 app.use(express.json());
 app.use(cookieParser());
 app.use("/auth", authRouter);
