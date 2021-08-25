@@ -32,7 +32,7 @@ const checkStockMarketTime = () => {
   const SAT = 6;
   const SUN = 0;
   const seoul = moment(new Date()).tz("Asia/Seoul");
-  const hour = Number(seoul.format("hh"));
+  const hour = Number(seoul.format("HH"));
   const minute = Number(seoul.format("mm"));
   const day = seoul.day();
 
@@ -47,20 +47,25 @@ module.exports = {
     const dirPath = __dirname.split("/");
     const filePath = `${dirPath
       .splice(0, dirPath.length - 1)
-      .join("/")}/stock/stock-real-data.json`;
+      .join("/")}/stock/data/stock-data.json`;
 
     setInterval(() => {
       if (!checkStockMarketTime()) {
         console.log(
           `주식 시장이 열린 시간이 아닙니다. [${moment(new Date())
             .tz("Asia/Seoul")
-            .format("yyyy-MM-DD hh:mm:ss")}]`
+            .format("yyyy-MM-DD HH:mm:ss")}]`
         );
         return;
       }
       console.log("주식 데이터 업데이트가 시작되었습니다.");
       const fileContent = fs.readFileSync(filePath, "utf-8");
-      updateStockTable(JSON.parse(fileContent));
-    }, 1000 * 10);
+      const a = JSON.parse(fileContent);
+      // console.log(a);
+      // const b = fileContent.replaceAll(/[^\"]/, "");
+      // const c = JSON.parse(b);
+      // console.log(c);
+      // updateStockTable(JSON.parse(fileContent));
+    }, 1000 * 2);
   },
 };
