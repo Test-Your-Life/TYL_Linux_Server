@@ -2,12 +2,12 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const secret = process.env.JWT_SECRET;
 const accessTokenSigniture = {
-  expiresIn: "1m",
+  expiresIn: "3d",
   algorithm: "HS256",
   issuer: "TYL",
 };
 const refreshTokenSigniture = {
-  expiresIn: "5m",
+  expiresIn: "14d",
   algorithm: "HS256",
   issuer: "TYL",
 };
