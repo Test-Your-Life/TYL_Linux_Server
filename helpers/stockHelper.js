@@ -51,14 +51,14 @@ module.exports = {
       .join("/")}/stock/data/stock-data.json`;
 
     setInterval(() => {
-      // if (!checkStockMarketTime()) {
-      //   console.log(
-      //     `주식 시장이 열린 시간이 아닙니다. [${moment(new Date())
-      //       .tz("Asia/Seoul")
-      //       .format("yyyy-MM-DD HH:mm:ss")}]`
-      //   );
-      //   return;
-      // }
+      if (!checkStockMarketTime()) {
+        console.log(
+          `주식 시장이 열린 시간이 아닙니다. [${moment(new Date())
+            .tz("Asia/Seoul")
+            .format("yyyy-MM-DD HH:mm:ss")}]`
+        );
+        return;
+      }
       console.log("주식 데이터 업데이트가 시작되었습니다.");
       const fileContent = fs.readFileSync(filePath, "utf-8");
       const a = JSON.parse(fileContent);
