@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
       },
       USER_ID: DataTypes.INTEGER,
-      TRS_TP: DataTypes.STRING(4),
+      TRS_TP: DataTypes.STRING(10),
       TRS_NM: DataTypes.STRING(100),
       PRC: DataTypes.INTEGER,
       CNT: DataTypes.INTEGER,

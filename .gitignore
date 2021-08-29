@@ -108,3 +108,5 @@ config/
 
 # stock
 stock/
+
+build/
