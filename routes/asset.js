@@ -6,7 +6,10 @@ const { verifyToken, sendExpiredResponse } = require("./utils/jwt");
 const router = Router();
 
 router.get("/", async function (req, res) {
-  const token = req.headers.authorization.split("Bearer ")[1];
+  const authorization = req.headers.authorization;
+  if (!authorization)
+    return res.json({ code: 401, message: "로그인이 필요한 서비스입니다." });
+  const token = authorization.split("Bearer ")[1];
   try {
     const result = verifyToken(token);
     const email = result.email;
