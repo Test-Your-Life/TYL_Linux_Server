@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const { sequelize } = require("./sequelize");
@@ -34,6 +35,7 @@ updateRealData();
 app.use(logger("dev"));
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, "./build")));
 app.use("/auth", authRouter);
 app.use("/token", tokenRouter);
 app.use("/asset", assetRouter);
@@ -45,5 +47,6 @@ app.listen(PORT, function () {
 });
 
 app.get("/", function (req, res) {
-  res.send("<h1>틸 세팅 중..</h1>");
+  console.log(__dirname);
+  res.sendFile(path.join(__dirname, "./build", "index.html"));
 });
