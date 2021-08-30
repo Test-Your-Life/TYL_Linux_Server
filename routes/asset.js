@@ -22,10 +22,11 @@ router.get("/", async function (req, res) {
     let coin = { coinList: [], coinAsset: 0, coinProfit: 0 };
     const assetSum = assetQueryResult.reduce((acc, cur) => {
       const asset = cur.PRC * cur.CNT;
-      const profit = cur.TOT - asset;
+      const profit = asset - cur.TOT;
       if (cur.TRS_TP === "CASH") cash = { amount: cur.PRC };
-      else if (cur.TRS_TP === "STK") {
+      else if (cur.TRS_TP === "STOCK") {
         stock.stockList.push({
+          name: cur.TRS_NM,
           price: cur.PRC,
           quantity: cur.CNT,
           profit: profit,
@@ -34,6 +35,7 @@ router.get("/", async function (req, res) {
         stock.stockAsset += asset;
       } else if (cur.TRS_TP === "COIN") {
         coin.coinList.push({
+          name: cur.TRS_NM,
           price: cur.PRC,
           quantity: cur.CNT,
           profit: profit,
@@ -44,6 +46,7 @@ router.get("/", async function (req, res) {
       return acc + cur.PRC * cur.CNT;
     }, 0);
 
+    console.log(stock);
     res.json({
       asset: assetSum,
       cash: cash,

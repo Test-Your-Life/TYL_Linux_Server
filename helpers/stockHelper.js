@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const moment = require("moment");
-const { Stock } = require("../sequelize");
+const { Stock, Asset } = require("../sequelize");
 
 const updateStockTable = (stocks) => {
   for (const idx in stocks) {
@@ -19,6 +19,17 @@ const updateStockTable = (stocks) => {
       {
         where: {
           STK_CD: stock.code,
+        },
+      }
+    );
+
+    Asset.update(
+      {
+        PRC: stock.close,
+      },
+      {
+        where: {
+          ASS_CD: stock.code,
         },
       }
     );

@@ -40,6 +40,7 @@ router.post("/transaction", async function (req, res) {
     const token = authorization.split("Bearer ")[1];
     const result = verifyToken(token);
     const { trsType, code, name, assetType, value, amount } = req.body;
+    console.log(req.body);
     const varies = trsType === "buy" ? 1 : -1;
     const stock = await Stock.findOne({ where: { STK_CD: code } });
 
@@ -67,6 +68,7 @@ router.post("/transaction", async function (req, res) {
         USER_ID: user.USER_ID,
         TRS_TP: "STOCK",
         TRS_NM: name,
+        ASS_CD: code,
         PRC: value,
         CNT: amount,
         TOT: value * amount,
@@ -74,9 +76,15 @@ router.post("/transaction", async function (req, res) {
     } else {
       const originAsset = assetQueryRes.dataValues;
       const totalAmt = varies * value * amount;
+      const newAmt = originAsset.CNT + amount * varies;
+
+      if (trsType === "sell" && originAsset.CNT < amount)
+        return res.json({ code: 400, message: "보유 수량이 부족합니다." });
+
       Asset.update(
         {
-          CNT: originAsset.CNT + amount * varies,
+          CNT: newAmt,
+          TOT: originAsset.TOT + totalAmt,
         },
         {
           where: {

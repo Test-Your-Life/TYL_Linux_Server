@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       USER_ID: DataTypes.INTEGER,
       TRS_TP: DataTypes.STRING(10),
+      ASS_CD: DataTypes.STRING,
       TRS_NM: DataTypes.STRING(100),
       PRC: DataTypes.INTEGER,
       CNT: DataTypes.INTEGER,
