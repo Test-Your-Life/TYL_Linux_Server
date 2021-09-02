@@ -11,6 +11,7 @@ const rankRouter = require("./routes/rank");
 const stockRouter = require("./routes/stock");
 
 const { updateRealData } = require("./helpers/stockHelper.js");
+const cron = require("./crons/index.js");
 const PORT = 4000;
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(
 );
 
 updateRealData();
+cron.start();
 
 app.use(logger("dev"));
 app.use(express.json());
