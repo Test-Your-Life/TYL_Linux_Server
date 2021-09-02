@@ -14,7 +14,7 @@ router.get("/preday-history", async function (req, res) {
       where: {
         USER_ID: userId,
         DT: {
-          [Op.gte]: moment().subtract(2, "days").toDate(),
+          [Op.gte]: moment().subtract(5, "days").toDate(),
         },
       },
     });
