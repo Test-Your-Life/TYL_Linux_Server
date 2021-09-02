@@ -1242,6 +1242,13 @@
   "resolved" "https://registry.npmjs.org/next-tick/-/next-tick-1.0.0.tgz"
   "version" "1.0.0"
 
+"node-cron@^3.0.0":
+  "integrity" "sha512-DDwIvvuCwrNiaU7HEivFDULcaQualDv7KoNlB/UU1wPW0n1tDEmBJKhEIE6DlF2FuoOHcNbLJ8ITL2Iv/3AWmA=="
+  "resolved" "https://registry.npmjs.org/node-cron/-/node-cron-3.0.0.tgz"
+  "version" "3.0.0"
+  dependencies:
+    "moment-timezone" "^0.5.31"
+
 "nodemon@^2.0.12":
   "integrity" "sha512-egCTmNZdObdBxUBw6ZNwvZ/xzk24CKRs5K6d+5zbmrMr7rOpPmfPeF6OxM3DDpaRx331CQRFEktn+wrFFfBSOA=="
   "resolved" "https://registry.npmjs.org/nodemon/-/nodemon-2.0.12.tgz"
