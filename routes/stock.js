@@ -38,6 +38,8 @@ router.post("/transaction", async function (req, res) {
   const email = result;
 
   const { trsType, code, name, assetType, value, amount } = req.body;
+  if (!amount) return res.json({ code: 400, message: "amonut가 누락됨!!" });
+  console.log(req.body);
   const varies = trsType === "buy" ? 1 : -1;
   const stock = await Stock.findOne({ where: { STK_CD: code } });
 

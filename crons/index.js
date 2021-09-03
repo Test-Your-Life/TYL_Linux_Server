@@ -1,10 +1,12 @@
 const cron = require("node-cron");
 const { updateAssetHistory } = require("./history");
+const { updateRealData } = require("./stock");
 
 module.exports = {
   start: () => {
     // updateAssetHistory();
-    cron.schedule("0 15 * * *", () => {
+    updateRealData();
+    cron.schedule("0 0 * * *", () => {
       updateAssetHistory();
     });
   },

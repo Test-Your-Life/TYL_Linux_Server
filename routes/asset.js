@@ -3,10 +3,11 @@ const { User, Asset, TransactionHistory } = require("../sequelize");
 const jwt = require("jsonwebtoken");
 const { sendExpiredResponse, verifyToken } = require("./utils/jwt");
 const { verifyAuthorization } = require("./utils/authHelper");
+const db = require("./utils/db");
 
 const router = Router();
 
-router.get("/history", async function (req, res) {
+router.get("/transaction", async function (req, res) {
   const { code, type } = req.query;
 
   const result = verifyAuthorization(req.headers.authorization);
@@ -30,6 +31,22 @@ router.get("/history", async function (req, res) {
   });
 
   res.json({ code: 200, message: "OK", history: data });
+});
+
+router.get("/history", async function (req, res) {
+  const result = verifyAuthorization(req.headers.authorization);
+  if (result.code === 401) return res.json(result);
+  const email = result;
+
+  const user = await db.getUserByEmail(email);
+  const history = await db.selectAssetHistory(user.dataValues);
+  const data = !history
+    ? {}
+    : history.map((e) => {
+        return { asset: e.ASS_SUM, date: e.DT };
+      });
+
+  res.send({ code: 200, message: "전송완료", history: data });
 });
 
 router.get("/", async function (req, res) {
