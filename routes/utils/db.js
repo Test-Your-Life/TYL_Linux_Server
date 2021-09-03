@@ -24,7 +24,7 @@ module.exports = {
       where: {
         USER_ID: user.USER_ID,
         DT: {
-          [Op.gte]: moment().subtract(1, "days").toDate(),
+          [Op.gte]: moment().subtract(0, "days").toDate(),
         },
       },
     });

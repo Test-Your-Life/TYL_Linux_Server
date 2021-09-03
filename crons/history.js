@@ -16,7 +16,7 @@ exports.updateAssetHistory = async () => {
     const sum = assets.reduce((acc, cur) => acc + cur.PRC * cur.CNT, 0);
     const profit = beforeAsset ? sum - beforeAsset.ASS_SUM : 0;
 
-    console.log(">", user.NK, profit);
+    console.log("crond >", user.NK, profit);
 
     AssetHistory.create({
       ASS_HST_ID: `${date.replace(/-/gi, "")}-${user.USER_ID}`,
