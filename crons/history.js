@@ -7,10 +7,7 @@ exports.updateAssetHistory = async () => {
   const date = seoul.format("YYYY-MM-DD");
   const tommorow = seoul.subtract(1, "days").format("YYYY-MM-DD");
 
-  console.log(date, tommorow);
-
   users.forEach(async (user) => {
-    console.log(user.NK, tommorow);
     const assets = await Asset.findAll({ where: { USER_ID: user.USER_ID } });
     const beforeAsset = await AssetHistory.findOne({
       where: { USER_ID: user.USER_ID, DT: new Date(tommorow) },

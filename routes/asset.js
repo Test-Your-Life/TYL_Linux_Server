@@ -2,17 +2,14 @@ const { Router } = require("express");
 const { User, Asset, TransactionHistory } = require("../sequelize");
 const jwt = require("jsonwebtoken");
 const { sendExpiredResponse, verifyToken } = require("./utils/jwt");
-const { verifyAuthorization } = require("./utils/authHelper");
 const db = require("./utils/db");
+const { verifyTokens } = require("./middlewares");
 
 const router = Router();
 
-router.get("/transaction", async function (req, res) {
+router.get("/transaction", verifyTokens, async function (req, res) {
   const { code, type } = req.query;
-
-  const result = verifyAuthorization(req.headers.authorization);
-  if (result.code === 401) return res.json(result);
-  const email = result;
+  const email = req.decoded.email;
   const userQueryResult = await User.findOne({ where: { EMAIL: email } });
   const id = userQueryResult.dataValues.USER_ID;
   const assetHistsResult = await TransactionHistory.findAll({
@@ -33,13 +30,10 @@ router.get("/transaction", async function (req, res) {
   res.json({ code: 200, message: "OK", history: data });
 });
 
-router.get("/history", async function (req, res) {
-  const result = verifyAuthorization(req.headers.authorization);
-  if (result.code === 401) return res.json(result);
-  const email = result;
-
+router.get("/history", verifyTokens, async function (req, res) {
+  const email = req.decoded.email;
   const user = await db.getUserByEmail(email);
-  const history = await db.selectAssetHistory(user.dataValues);
+  const history = await db.selectAssetHistory(user);
   const data = !history
     ? {}
     : history.map((e) => {
@@ -49,12 +43,8 @@ router.get("/history", async function (req, res) {
   res.send({ code: 200, message: "전송완료", history: data });
 });
 
-router.get("/", async function (req, res) {
-  const result = verifyAuthorization(req.headers.authorization);
-
-  if (result.code === 401) return res.json(result);
-
-  const email = result;
+router.get("/", verifyTokens, async function (req, res) {
+  const email = req.decoded.email;
   const userQueryResult = await User.findOne({ where: { EMAIL: email } });
   const id = userQueryResult.dataValues.USER_ID;
   const assetQueryResult = await Asset.findAll({ where: { USER_ID: id } });

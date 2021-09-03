@@ -8,7 +8,7 @@ const {
   Asset,
 } = require("../sequelize");
 const { verifyToken, sendExpiredResponse } = require("./utils/jwt");
-const { verifyAuthorization } = require("./utils/authHelper");
+const { verifyTokens } = require("./middlewares");
 
 const router = Router();
 
@@ -32,11 +32,8 @@ router.get("/real-data", async function (req, res) {
   res.json(stockList);
 });
 
-router.post("/transaction", async function (req, res) {
-  const result = verifyAuthorization(req.headers.authorization);
-  if (result.code === 401) return res.json(result);
-  const email = result;
-
+router.post("/transaction", verifyTokens, async function (req, res) {
+  const email = req.decoded.email;
   const { trsType, code, name, assetType, value, amount } = req.body;
   if (!amount) return res.json({ code: 400, message: "amonut가 누락됨!!" });
   console.log(req.body);
