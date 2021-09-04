@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage }).single("profile_img");
 
-router.post("profile-image", verifyTokens, function (req, res) {
+router.post("/profile-image", verifyTokens, function (req, res) {
   upload(req, res, (err) => {
     if (err) {
       return res.json({ success: false, err });
