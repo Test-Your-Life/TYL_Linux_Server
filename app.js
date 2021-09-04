@@ -8,6 +8,7 @@ const authRouter = require("./routes/auth");
 const assetRouter = require("./routes/asset");
 const rankRouter = require("./routes/rank");
 const stockRouter = require("./routes/stock");
+const uploadRouter = require("./routes/upload");
 
 const cron = require("./crons/index.js");
 const PORT = 4000;
@@ -39,6 +40,7 @@ app.use("/auth", authRouter);
 app.use("/asset", assetRouter);
 app.use("/rank", rankRouter);
 app.use("/stock", stockRouter);
+app.use("/api/upload", uploadRouter);
 
 app.listen(PORT, function () {
   console.log(`포트번호 ${PORT}번에서 서버 동작 중..`);
