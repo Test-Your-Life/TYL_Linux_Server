@@ -35,7 +35,6 @@ router.get("/real-data", async function (req, res) {
 
 router.get("/history-data", async function (req, res) {
   const code = req.query.code;
-  console.log(code);
   if (!code) return res.json({ code: 400, message: "쿼리가 누락되었습니다." });
   const histories = await db.selectStockHistoryByCode(code);
   const data = histories.map((e) => {
@@ -50,6 +49,17 @@ router.get("/history-data", async function (req, res) {
     };
   });
   res.json({ code: 200, message: "전송완료", history: data });
+});
+
+router.get("/amount", verifyTokens, async function (req, res) {
+  const code = req.query.code;
+  if (!code) return res.json({ code: 400, message: "쿼리가 누락되었습니다." });
+
+  const email = req.decoded.email;
+  const user = await db.getUserByEmail(email);
+  const stockAmount = await db.getStockAmount(code, user.USER_ID);
+
+  res.json({ code: 200, message: "전송완료", amount: stockAmount });
 });
 
 router.post("/transaction", verifyTokens, async function (req, res) {

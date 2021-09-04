@@ -1,4 +1,4 @@
-const { User, AssetHistory, StockHistData } = require("../../sequelize");
+const { User, Asset, AssetHistory, StockHistData } = require("../../sequelize");
 const { Op } = require("sequelize");
 const moment = require("moment");
 
@@ -36,5 +36,11 @@ module.exports = {
       },
       order: [["DT", "ASC"]],
     });
+  },
+  getStockAmount: async (code, id) => {
+    const stock = await Asset.findOne({
+      where: { ASS_CD: code, USER_ID: id },
+    });
+    return stock ? stock.CNT : 0;
   },
 };
