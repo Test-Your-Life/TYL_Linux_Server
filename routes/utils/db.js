@@ -9,6 +9,22 @@ const { Op } = require("sequelize");
 const moment = require("moment");
 
 module.exports = {
+  createNewUser: async (email, nickname) => {
+    const user = await User.create({
+      EMAIL: email,
+      NK: nickname,
+      JN_DT: new Date(),
+    });
+    await Asset.create({
+      ASS_ID: `${user.USER_ID}_cash`,
+      USER_ID: user.USER_ID,
+      TRS_TP: "CASH",
+      TRS_NM: "현금",
+      PRC: 1000000,
+      CNT: 1,
+    });
+    return user;
+  },
   getUserByEmail: async (email) => {
     return await User.findOne({ where: { EMAIL: email } });
   },

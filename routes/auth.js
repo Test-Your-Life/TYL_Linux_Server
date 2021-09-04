@@ -10,6 +10,7 @@ const {
   sendExpiredResponse,
   sendErrorResponse,
 } = require("./utils/jwt");
+const db = require("./utils/db");
 
 const router = Router();
 
@@ -42,55 +43,28 @@ router.get("/slient-refresh", function (req, res) {
   }
 });
 
-router.post("/login", function (req, res) {
+router.post("/login", async function (req, res) {
   const { email, name } = req.body;
+  let user = await db.getUserByEmail(email);
 
-  // 로그인 시도하는 계정의 기존 회원 유무 판단
-  User.findOne({
-    where: {
-      EMAIL: email,
-    },
-  }).then((row) => {
-    if (!row) {
-      // 신규 가입
-      User.create({
-        EMAIL: email,
-        NK: name,
-        JN_DT: new Date(),
-      }).then((row) => {
-        const { USER_ID } = row.dataValues;
-        Asset.create({
-          ASS_ID: `${USER_ID}_cash`,
-          USER_ID: USER_ID,
-          TRS_TP: "CASH",
-          TRS_NM: "현금",
-          PRC: 1000000,
-          CNT: 1,
-        });
-      });
-    } else {
-      // 기존 회원
-      const { USER_ID, EMAIL, PRF_IMG, NK } = row.dataValues;
+  if (!user) user = await db.createNewUser(email, name);
 
-      try {
-        // 각 토큰 발급
-        const payload = { email: EMAIL, nickname: NK };
-        const accessToken = signAccessToken(payload);
-        const refreshToken = signRefreshToken();
+  try {
+    const { USER_ID, EMAIL, PRF_IMG, NK } = user;
+    const payload = { email: EMAIL, nickname: NK };
+    const accessToken = signAccessToken(payload);
+    const refreshToken = signRefreshToken();
 
-        // refreshToken DB에 추가
-        Token.create({
-          RFS_TK: refreshToken,
-          USER_ID: USER_ID,
-        });
+    Token.create({
+      RFS_TK: refreshToken,
+      USER_ID: USER_ID,
+    });
 
-        return sendAuthResponse(res, accessToken, refreshToken);
-      } catch (error) {
-        console.error(error);
-        return sendErrorResponse(res);
-      }
-    }
-  });
+    return sendAuthResponse(res, accessToken, refreshToken);
+  } catch (error) {
+    console.error(error);
+    return sendErrorResponse(res);
+  }
 });
 
 router.post("/logout", function (req, res) {
