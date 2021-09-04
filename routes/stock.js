@@ -65,7 +65,8 @@ router.get("/amount", verifyTokens, async function (req, res) {
 router.post("/transaction", verifyTokens, async function (req, res) {
   const email = req.decoded.email;
   const { trsType, code, name, assetType, value, amount } = req.body;
-  if (!amount) return res.json({ code: 400, message: "amonut가 누락됨!!" });
+  if (!amount || !code || !value || !trsType)
+    return res.json({ code: 400, message: "필수 정보가 누락되었습니다." });
   console.log(req.body);
   const varies = trsType === "buy" ? 1 : -1;
   const stock = await Stock.findOne({ where: { STK_CD: code } });

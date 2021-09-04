@@ -1,22 +1,20 @@
 const { Router } = require("express");
-const { User, Asset, TransactionHistory } = require("../sequelize");
-const jwt = require("jsonwebtoken");
-const { sendExpiredResponse, verifyToken } = require("./utils/jwt");
-const db = require("./utils/db");
 const { verifyTokens } = require("./middlewares");
+const { getTotalAssetData } = require("./utils/assetHelper");
+const db = require("./utils/db");
 
 const router = Router();
 
 router.get("/transaction", verifyTokens, async function (req, res) {
   const { code, type } = req.query;
-  const email = req.decoded.email;
-  const userQueryResult = await User.findOne({ where: { EMAIL: email } });
-  const id = userQueryResult.dataValues.USER_ID;
-  const assetHistsResult = await TransactionHistory.findAll({
-    where: { USER_ID: id, ASS_CD: code },
-  });
+  if (!code || !type)
+    return res.json({ code: 400, message: "쿼리가 누락되었습니다." });
 
-  const data = assetHistsResult.map((e) => {
+  const email = req.decoded.email;
+  const user = await db.getUserByEmail(email);
+  const trsHistories = await db.selectTransactionHistory(user, code);
+
+  const data = trsHistories.map((e) => {
     return {
       type: e.TRC_TP,
       code: e.ASS_CD,
@@ -45,51 +43,10 @@ router.get("/history", verifyTokens, async function (req, res) {
 
 router.get("/", verifyTokens, async function (req, res) {
   const email = req.decoded.email;
-  const userQueryResult = await User.findOne({ where: { EMAIL: email } });
-  const id = userQueryResult.dataValues.USER_ID;
-  const assetQueryResult = await Asset.findAll({ where: { USER_ID: id } });
-
-  let cash;
-  let stock = { stockList: [], stockAsset: 0, stockProfit: 0 };
-  let coin = { coinList: [], coinAsset: 0, coinProfit: 0 };
-
-  const assetSum = assetQueryResult.reduce((acc, cur) => {
-    const asset = cur.PRC * cur.CNT;
-    const profit = asset - cur.TOT;
-
-    if (cur.CNT > 0) {
-      if (cur.TRS_TP === "CASH") cash = { amount: cur.PRC };
-      else if (cur.TRS_TP === "STOCK") {
-        stock.stockList.push({
-          code: cur.ASS_CD,
-          name: cur.TRS_NM,
-          price: cur.PRC,
-          quantity: cur.CNT,
-          profit: profit,
-        });
-        stock.stockProfit += profit;
-        stock.stockAsset += asset;
-      } else if (cur.TRS_TP === "COIN") {
-        coin.coinList.push({
-          code: cur.ASS_CD,
-          name: cur.TRS_NM,
-          price: cur.PRC,
-          quantity: cur.CNT,
-          profit: profit,
-        });
-        coin.coinProfit += profit;
-        coin.coinAsset += asset;
-      }
-    }
-    return acc + cur.PRC * cur.CNT;
-  }, 0);
-
-  res.json({
-    asset: assetSum,
-    cash: cash,
-    stock: stock,
-    coin: coin,
-  });
+  const user = await db.getUserByEmail(email);
+  const assets = await db.selectAsset(user);
+  const data = getTotalAssetData(assets);
+  res.json(data);
 });
 
 module.exports = router;

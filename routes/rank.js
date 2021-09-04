@@ -1,7 +1,4 @@
 const { Router } = require("express");
-const { User, AssetHistory } = require("../sequelize");
-const { Op } = require("sequelize");
-const moment = require("moment");
 const db = require("./utils/db");
 
 const router = Router();
