@@ -103,9 +103,9 @@ module.exports = {
       .splice(0, dirPath.length - 1)
       .join("/")}/stock/data/XGBoost_data.json`;
 
-    // const rfFileContent = fs.readFileSync(rfFilePath, "utf-8");
-    // updatePredictionTable(JSON.parse(rfFileContent), "RF");
-    // const xgBoostFileContent = fs.readFileSync(xgBoostFilePath, "utf-8");
-    // updatePredictionTable(JSON.parse(xgBoostFileContent), "XGBoost");
+    const rfFileContent = fs.readFileSync(rfFilePath, "utf-8");
+    updatePredictionTable(JSON.parse(rfFileContent), "RF");
+    const xgBoostFileContent = fs.readFileSync(xgBoostFilePath, "utf-8");
+    updatePredictionTable(JSON.parse(xgBoostFileContent), "XGB");
   },
 };

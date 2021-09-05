@@ -33,11 +33,11 @@ router.get("/real-data", async function (req, res) {
   res.json(stockList);
 });
 
-router.get("/history-data", async function (req, res) {
+router.get("/candle-data", async function (req, res) {
   const code = req.query.code;
   if (!code) return res.json({ code: 400, message: "쿼리가 누락되었습니다." });
   const histories = await db.selectStockHistoryByCode(code);
-  const data = histories.map((e) => {
+  const candleData = histories.map((e) => {
     return {
       date: e.DT,
       startValue: e.STR_VL,
@@ -48,7 +48,7 @@ router.get("/history-data", async function (req, res) {
       tradeAmount: e.AMT,
     };
   });
-  res.json({ code: 200, message: "전송완료", history: data });
+  res.json({ code: 200, message: "전송완료", candleData: candleData });
 });
 
 router.get("/amount", verifyTokens, async function (req, res) {

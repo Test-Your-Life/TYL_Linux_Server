@@ -7,9 +7,9 @@ module.exports = {
   start: () => {
     updateRealData();
     updateCoinRealData();
-    updatePredictionData();
     cron.schedule("0 0 * * *", () => {
       updateAssetHistory();
+      // updatePredictionData();
     });
   },
 };
