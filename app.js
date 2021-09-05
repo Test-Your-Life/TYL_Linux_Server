@@ -8,6 +8,7 @@ const authRouter = require("./routes/auth");
 const assetRouter = require("./routes/asset");
 const rankRouter = require("./routes/rank");
 const stockRouter = require("./routes/stock");
+const coinRouter = require("./routes/coin");
 const uploadRouter = require("./routes/upload");
 
 const cron = require("./crons/index.js");
@@ -40,6 +41,7 @@ app.use("/auth", authRouter);
 app.use("/asset", assetRouter);
 app.use("/rank", rankRouter);
 app.use("/stock", stockRouter);
+app.use("/api/coin", coinRouter);
 app.use("/api/upload", uploadRouter);
 
 app.listen(PORT, function () {
