@@ -10,6 +10,7 @@ router.get("/preday-history", async function (req, res) {
   for (const user of users) {
     const assetHistory = await db.getBeforeDayAsset(user);
     if (!assetHistory) continue;
+    console.log(assetHistory.DT, user.NK);
     const { PRF, ASS_SUM } = assetHistory.dataValues;
     history.push({
       nickname: user.NK,

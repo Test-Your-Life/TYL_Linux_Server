@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const moment = require("moment");
-const { Stock, Asset } = require("../sequelize");
+const { Stock, Asset, Prediction } = require("../sequelize");
 
 const updateStockTable = (stocks) => {
   for (const idx in stocks) {
@@ -54,6 +54,24 @@ const checkStockMarketTime = () => {
   else return false;
 };
 
+const updatePredictionTable = (predicts, type) => {
+  console.log(predicts);
+  for (const code in predicts) {
+    const predict = predicts[code];
+    Prediction.update(
+      {
+        RATE: predict,
+      },
+      {
+        where: {
+          STK_CD: code,
+          PRDT_TP: type,
+        },
+      }
+    );
+  }
+};
+
 module.exports = {
   updateRealData: () => {
     const dirPath = __dirname.split("/");
@@ -75,5 +93,19 @@ module.exports = {
       const a = JSON.parse(fileContent);
       updateStockTable(a);
     }, 1000 * 10);
+  },
+  updatePredictionData: () => {
+    const dirPath = __dirname.split("/");
+    const rfFilePath = `${dirPath
+      .splice(0, dirPath.length - 1)
+      .join("/")}/stock/data/RF_data.json`;
+    const xgBoostFilePath = `${dirPath
+      .splice(0, dirPath.length - 1)
+      .join("/")}/stock/data/XGBoost_data.json`;
+
+    // const rfFileContent = fs.readFileSync(rfFilePath, "utf-8");
+    // updatePredictionTable(JSON.parse(rfFileContent), "RF");
+    // const xgBoostFileContent = fs.readFileSync(xgBoostFilePath, "utf-8");
+    // updatePredictionTable(JSON.parse(xgBoostFileContent), "XGBoost");
   },
 };

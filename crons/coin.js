@@ -12,7 +12,7 @@ module.exports = {
       axios
         .get(`https://api.upbit.com/v1/ticker?${query}`)
         .then((res) => {
-          console.log("쉽지 않다.. 비트코인..");
+          console.log("비트 코인 데이터가 업데이트되었습니다.");
           const datas = res.data;
           datas.forEach((data) => {
             Coin.update(
