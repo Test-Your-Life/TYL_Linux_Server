@@ -19,8 +19,8 @@ module.exports = (sequelize, DataTypes) => {
       ASS_CD: DataTypes.STRING,
       TRS_NM: DataTypes.STRING(100),
       PRC: DataTypes.INTEGER,
-      CNT: DataTypes.INTEGER,
-      TOT: DataTypes.INTEGER,
+      CNT: DataTypes.DOUBLE,
+      TOT: DataTypes.DOUBLE,
     },
     {
       sequelize,
