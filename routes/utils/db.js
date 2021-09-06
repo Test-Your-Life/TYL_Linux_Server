@@ -28,6 +28,21 @@ module.exports = {
   getUserByEmail: async (email) => {
     return await User.findOne({ where: { EMAIL: email } });
   },
+  checkNicknameValidity: async (nickname) => {
+    return await User.findOne({ where: { NK: nickname } });
+  },
+  updateNickname: (user, nickname) => {
+    User.update(
+      {
+        NK: nickname,
+      },
+      {
+        where: {
+          EMAIL: user.EMAIL,
+        },
+      }
+    );
+  },
   selectUser: async () => {
     return await User.findAll();
   },
