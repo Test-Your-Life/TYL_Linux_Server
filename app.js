@@ -10,7 +10,7 @@ const rankRouter = require("./routes/rank");
 const stockRouter = require("./routes/stock");
 const coinRouter = require("./routes/coin");
 const predictionRouter = require("./routes/prediction");
-const uploadRouter = require("./routes/upload");
+const imageRouter = require("./routes/image");
 
 const cron = require("./crons/index.js");
 const PORT = 4000;
@@ -38,13 +38,14 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "./build")));
+app.use('/img', express.static(path.join(__dirname, 'uploads')));
 app.use("/auth", authRouter);
 app.use("/asset", assetRouter);
 app.use("/rank", rankRouter);
 app.use("/stock", stockRouter);
 app.use("/api/coin", coinRouter);
 app.use("/api/prediction", predictionRouter);
-app.use("/api/upload", uploadRouter);
+app.use("/api/image", imageRouter);
 
 app.listen(PORT, function () {
   console.log(`포트번호 ${PORT}번에서 서버 동작 중..`);

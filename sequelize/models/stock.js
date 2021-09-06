@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       HIGH_VL: DataTypes.INTEGER,
       AMT: DataTypes.BIGINT,
       RATE: DataTypes.FLOAT,
+      IMG_PATH: DataTypes.STRING,
     },
     {
       sequelize,

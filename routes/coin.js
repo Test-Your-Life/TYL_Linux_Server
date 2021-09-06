@@ -44,7 +44,7 @@ router.get("/candle-data", async function (req, res) {
       });
       res.json({ code: 200, message: "전송완료", candleData: candleData });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => console.log('비트코인 에러'));
 });
 
 module.exports = router;

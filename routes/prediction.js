@@ -15,8 +15,6 @@ router.get("/", async function (req, res) {
       return { code: e.STK_CD, name: e.STK_NM, rate: e.RATE };
     });
 
-  console.log(rf, xgb);
-
   res.json({ code: 200, message: "OK", prediction: { rf: rf, xgb: xgb } });
 });
 
