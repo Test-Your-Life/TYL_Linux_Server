@@ -14,6 +14,8 @@ router.get("/transaction", verifyTokens, async function (req, res) {
   const user = await db.getUserByEmail(email);
   const trsHistories = await db.selectTransactionHistory(user, code);
 
+  console.log(code);
+
   const data = trsHistories.map((e) => {
     return {
       type: e.TRC_TP,

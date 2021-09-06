@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { Coin } = require("../sequelize");
+const { Coin, Asset } = require("../sequelize");
 module.exports = {
   updateCoinRealData: async () => {
     const markets = await Coin.findAll({ order: [["AMT", "DESC"]] });
@@ -27,6 +27,17 @@ module.exports = {
               {
                 where: {
                   COIN_CD: data.market,
+                },
+              }
+            );
+
+            Asset.update(
+              {
+                PRC: data.trade_price,
+              },
+              {
+                where: {
+                  ASS_CD: data.market,
                 },
               }
             );

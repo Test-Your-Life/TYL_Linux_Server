@@ -1,5 +1,6 @@
+const moment = require("moment");
 const { Router } = require("express");
-const { Coin, Asset } = require("../sequelize");
+const { Coin, Asset, TransactionHistory } = require("../sequelize");
 const axios = require("axios");
 const { verifyTokens } = require("./middlewares");
 const db = require("./utils/db");
@@ -53,11 +54,12 @@ router.get("/candle-data", async function (req, res) {
 router.post("/transaction", verifyTokens, async function (req, res) {
   const email = req.decoded.email;
   const { trsType, code, name, assetType, value, amount } = req.body;
-  if (!amount || !code || !value || !trsType)
+  if (!amount || !code || !value || !trsType || assetType !== "coin")
     return res.json({ code: 400, message: "필수 정보가 누락되었습니다." });
+
   console.log(req.body);
   const varies = trsType === "buy" ? 1 : -1;
-  const coin = await Coin.findOne({ where: { STK_CD: code } });
+  const coin = await Coin.findOne({ where: { COIN_CD: code } });
   const user = await db.getUserByEmail(email);
 
   const currentAsset = await Asset.findOne({

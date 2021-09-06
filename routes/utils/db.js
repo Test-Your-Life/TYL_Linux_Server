@@ -20,7 +20,7 @@ module.exports = {
       USER_ID: user.USER_ID,
       TRS_TP: "CASH",
       TRS_NM: "현금",
-      PRC: 1000000,
+      PRC: 10000000,
       CNT: 1,
     });
     return user;
@@ -62,14 +62,16 @@ module.exports = {
     });
   },
   getBeforeDayAsset: async (user) => {
-    return await AssetHistory.findOne({
+    const hists = await AssetHistory.findAll({
       where: {
         USER_ID: user.USER_ID,
         DT: {
-          [Op.gte]: moment().subtract(23, "hours").toDate(),
+          [Op.gte]: moment().subtract(1, "days").toDate(),
         },
       },
+      order: [["DT", "DESC"]],
     });
+    return hists[0];
   },
   selectStockHistoryByCode: async (code) => {
     return await StockHistData.findAll({
@@ -90,4 +92,24 @@ module.exports = {
       where: { USER_ID: user.USER_ID, ASS_CD: code },
     });
   },
+  // updateCoinRealData: (coins) => {
+  //   coins.forEach((coin) => {
+  //     Coin.update(
+  //       {
+  //          VL: stock.close,
+  //       STR_VL: stock.open,
+  //       END_VL: stock.close,
+  //       LOW_VL: stock.low,
+  //       HIGH_VL: stock.high,
+  //       AMT: stock.amount,
+  //       RATE: stock.rate,
+  //       },
+  //       {
+  //         where: {
+  //           COIN_CD: code,
+  //         },
+  //       }
+  //     );
+  //   });
+  // },
 };

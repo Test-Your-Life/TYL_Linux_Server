@@ -46,10 +46,16 @@ router.get("/stock/:filename", function (req, res) {
   res.sendFile(realPath);
 });
 
-router.get("/profile/:filename", function (req, res) {
-  const file = req.params.filename;
+router.get("/profile", async function (req, res) {
+  const { email } = req.query;
   const defaultPath = path.join(__dirname, "../uploads", "default-logo.png");
-  const filepath = path.join(__dirname, "../uploads", file);
+  const user = await db.getUserByEmail(email);
+  if (!user) return res.sendFile(defaultPath);
+  const filepath = path.join(
+    __dirname,
+    "../uploads",
+    `${user.USER_ID}_profile`
+  );
   const jpgFile = `${filepath}.jpg`;
   const pngFile = `${filepath}.png`;
   const realPath = fs.existsSync(jpgFile)

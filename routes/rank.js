@@ -19,8 +19,8 @@ router.get("/preday-history", async function (req, res) {
   }
   history.sort((a, b) => (a.profit < b.profit ? 1 : -1));
 
-  const upperRank = history.splice(0, 8);
-  const lowerRank = history.splice(history.length - 8);
+  const upperRank = history.slice(0, 8);
+  const lowerRank = history.slice(history.length - 8);
 
   res.json({ upperRank: upperRank, lowerRank: lowerRank });
 });
